@@ -11,7 +11,11 @@ This repository is a **fork / continuation** of the Polymarket arbitrage spread-
 Add your screen recording or walkthrough below when ready (replace the placeholder link):
 
 <!-- Demo: paste your video URL or GitHub asset / YouTube embed link here -->
-**Demo:** _[Your demo video link]_
+**Demo:** __
+
+https://github.com/user-attachments/assets/3f24f99a-fe5d-412e-ba33-2803b7ef28db
+
+
 
 ---
 
