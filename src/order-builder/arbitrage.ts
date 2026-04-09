@@ -21,14 +21,9 @@ type CopytradeStateRow = {
     lastBuyPriceYES?: number; // Actual fill price of last YES buy (for accurate dynamic threshold)
     lastBuyPriceNO?: number; // Actual fill price of last NO buy (for accurate dynamic threshold)
     lastUpdatedIso: string;
-    /**
-     * Metadata for attribution / PnL logging (optional for backwards compatibility).
-     * These fields allow `redeem-holdings` to compute realized PnL per slug/market.
-     */
     conditionId?: string;
     slug?: string;
     market?: string;
-    /** Outcome indices in Gamma `outcomes` array (0-based). */
     upIdx?: number;
     downIdx?: number;
 };
@@ -1470,12 +1465,6 @@ export class CopytradeArbBot {
             const oppositeBuyCount = oppositeToken === "YES" ? rowAfter.buyCountYES : rowAfter.buyCountNO;
 
             if (buyPrice !== null) {
-                // Calculate dynamic threshold for opposite token (second side of hedge)
-                // NEW STRATEGY: Formula: 1 - previous token price + boost
-                // Buy immediately when opposite token price <= (1 - buyPrice + boost) - buffer
-                // No waiting for reversal - immediate buy for speed
-                
-                // Use actual fill price if available (from async order tracking), otherwise use limit price
                 const actualBuyPrice = currentToken === "YES" ? 
                     (rowAfter.lastBuyPriceYES || buyPrice) : 
                     (rowAfter.lastBuyPriceNO || buyPrice);
@@ -1494,12 +1483,6 @@ export class CopytradeArbBot {
                     logger.debug(`📊 Using actual fill price ${actualBuyPrice.toFixed(4)} (vs limit ${buyPrice.toFixed(4)}) for dynamic threshold`);
                 }
 
-                // Ensure threshold meets $1 minimum order requirement
-                // When placing order: limitPrice = tempPrice + priceBuffer
-                // Order value = limitPrice * sharesPerSide >= $1
-                // So: (tempPrice + priceBuffer) * sharesPerSide >= 1
-                // Therefore: tempPrice >= (1 / sharesPerSide) - priceBuffer
-                // Estimate price buffer (will be 0.01-0.02 depending on dynamic buffer)
                 let estimatedPriceBuffer = 0.01; // Default
                 if (this.cfg.dynamicPriceBuffer) {
                     const currentSumAvg = avg(rowAfter.costYES, rowAfter.qtyYES) + avg(rowAfter.costNO, rowAfter.qtyNO);
@@ -1549,11 +1532,7 @@ export class CopytradeArbBot {
                 }
             } 
             if (!buySucceeded) {
-                // Buy failed - STILL switch to opposite token to enforce alternation
-                // This maintains hedge balance even when buys fail
-                // If opposite side is maxed out, we'll skip in next tick
                 if (oppositeBuyCount >= this.cfg.maxBuysPerSide) {
-                    // Opposite side already maxed, can't buy more - stop tracking
                     logger.warn(`⚠️ Buy failed for ${currentToken} and opposite ${oppositeToken} is maxed (${oppositeBuyCount}/${this.cfg.maxBuysPerSide}). Stopping tracking.`);
                     tracking.trackingToken = null;
                     tracking.initialized = false;
@@ -1589,9 +1568,6 @@ export class CopytradeArbBot {
         upIdx: number,
         downIdx: number
     ): Promise<number | null> {
-        // Returns the actual buy price (limitPrice) if successful, null if failed
-        // Increment attempt counter FIRST (before any early returns)
-        // This ensures all attempts (successful + failed) count towards MAX_BUYS_PER_SIDE
         const row = state[key] ?? emptyRow();
         if (!state[key]) {
             state[key] = row; // Ensure row is in state if it was just created
@@ -1604,8 +1580,6 @@ export class CopytradeArbBot {
         // PERFORMANCE OPTIMIZATION: Save state asynchronously (debounced) - don't block
         saveState(state);
 
-        // SPEED OPTIMIZATION: Use configurable price buffer (default 3 cents for faster fills)
-        // Dynamic buffer: increase if sumAvg is high (more aggressive) or if dynamic buffer is enabled
         let priceBuffer = this.cfg.priceBuffer || 0.03; // Default 3 cents buffer (was 0.01)
         if (this.cfg.dynamicPriceBuffer) {
             const currentSumAvg = avg(row.costYES, row.qtyYES) + avg(row.costNO, row.qtyNO);

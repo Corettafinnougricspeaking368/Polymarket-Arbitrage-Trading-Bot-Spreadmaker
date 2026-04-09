@@ -1,1 +1,1 @@
-export { CopytradeArbBot as GabagoolArbBot, copytrade as gabagool } from "./copytrade";
+export { CopytradeArbBot as GabagoolArbBot, copytrade as gabagool } from "./arbitrage";

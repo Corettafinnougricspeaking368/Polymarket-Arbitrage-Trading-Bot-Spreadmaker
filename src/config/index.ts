@@ -1,7 +1,6 @@
 import { config as dotenvConfig } from "dotenv";
 import { resolve } from "path";
 
-// Load `.env` once for the whole app. Safe if the file doesn't exist.
 dotenvConfig({ path: resolve(process.cwd(), ".env") });
 
 function envString(name: string, fallback?: string): string | undefined {
@@ -39,20 +38,15 @@ function requireEnv(name: string): string {
 }
 
 export const config = {
-    /** Enable verbose logs */
     debug: envBool("DEBUG", false),
 
-    /** EVM chain id (Polygon mainnet = 137) */
     chainId: envNumber("CHAIN_ID", 137),
 
-    /** Polymarket CLOB API base URL */
     clobApiUrl: envString("CLOB_API_URL", "https://clob.polymarket.com")!,
 
-    /** Wallet private key (required for most scripts). Use config.requirePrivateKey() when needed. */
     privateKey: envString("PRIVATE_KEY"),
     requirePrivateKey: () => requireEnv("PRIVATE_KEY"),
 
-    /** RPC configuration (used for on-chain calls like allowance/balance/redeem). */
     rpcUrl: envString("RPC_URL"),
     rpcToken: envString("RPC_TOKEN"),
 

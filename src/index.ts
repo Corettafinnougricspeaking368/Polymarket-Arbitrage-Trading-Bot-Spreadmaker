@@ -5,7 +5,7 @@ import { getClobClient } from "./providers/clobclient";
 import { waitForMinimumUsdcBalance } from "./utils/balance";
 import { config } from "./config";
 
-import { CopytradeArbBot } from "./order-builder/copytrade";
+import { CopytradeArbBot } from "./order-builder/arbitrage";
 import { setupConsoleFileLogging } from "./utils/console-file";
 
 setupConsoleFileLogging({
